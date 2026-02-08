@@ -60,24 +60,27 @@
 
     .page { max-width: 620px; width: 100%; }
 
-    /* ── AVATAR ── */
-    .avatar-float {
+    /* ── AVATAR + ANNOTATION ── */
+    .avatar-zone {
       position: absolute;
-      top: -24px;
-      right: -8px;
-      width: 72px;
-      height: 72px;
+      top: -32px;
+      right: -12px;
+      z-index: 2;
+    }
+
+    .avatar-float {
+      width: 76px;
+      height: 76px;
       border-radius: 50%;
       border: 2px solid var(--gold-border);
       overflow: hidden;
       transform: rotate(3deg);
       transition: transform 0.3s ease, border-color 0.3s ease;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-      z-index: 2;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
     }
 
     .avatar-float:hover {
-      transform: rotate(-2deg) scale(1.08);
+      transform: rotate(-2deg) scale(1.1);
       border-color: var(--gold);
     }
 
@@ -88,15 +91,46 @@
       display: block;
     }
 
+    /* Hand-written annotation */
+    .avatar-note {
+      position: absolute;
+      top: -38px;
+      right: 68px;
+      white-space: nowrap;
+      font-family: 'Segoe Script', 'Comic Sans MS', 'Caveat', cursive;
+      font-size: 0.7rem;
+      color: var(--gold);
+      opacity: 0.6;
+      transform: rotate(-6deg);
+      pointer-events: none;
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .avatar-note span {
+      display: inline-block;
+    }
+
+    /* Twirly arrow (SVG) */
+    .twirl-arrow {
+      position: absolute;
+      top: -8px;
+      right: 58px;
+      width: 48px;
+      height: 40px;
+      opacity: 0.45;
+      pointer-events: none;
+      transform: rotate(8deg);
+    }
+
     .hero-row { position: relative; }
 
     @media (max-width: 600px) {
-      .avatar-float {
-        width: 56px;
-        height: 56px;
-        top: -16px;
-        right: 0;
-      }
+      .avatar-zone { top: -28px; right: 0; }
+      .avatar-float { width: 56px; height: 56px; }
+      .avatar-note { display: none; }
+      .twirl-arrow { display: none; }
     }
 
     /* ── LANG SWITCHER ── */
@@ -362,8 +396,16 @@
       <div class="hero-row">
         <h1>Ricardo Pedroni</h1>
         <div class="duck-wrap"><div class="duck"></div></div>
-        <div class="avatar-float">
-          <img src="avatar.jpg" alt="Ricardo Pedroni" width="72" height="72" loading="eager">
+        <div class="avatar-zone">
+          <span class="avatar-note" id="avatar-note"></span>
+          <!-- Twirly arrow SVG pointing down-right toward the avatar -->
+          <svg class="twirl-arrow" viewBox="0 0 60 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 8C12 4 28 2 38 12C48 22 42 34 50 38" stroke="#ffd700" stroke-width="1.5" stroke-linecap="round" fill="none" stroke-dasharray="3 2"/>
+            <path d="M46 32L50 38L43 38" stroke="#ffd700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+          <div class="avatar-float">
+            <img src="avatar.jpg" alt="Ricardo Pedroni" width="76" height="76" loading="eager">
+          </div>
         </div>
       </div>
 
@@ -445,6 +487,7 @@
         ],
         avail: 'available for interesting problems',
         sig: 'made with coffee and existential questioning 🦆',
+        avatarNote: 'that\'s me! handsome devil, ey?',
       },
 
       pt: {
@@ -478,6 +521,7 @@
         ],
         avail: 'disponível para problemas interessantes',
         sig: 'feito com café e questionamento existencial 🦆',
+        avatarNote: 'sou eu! bonito, né?',
       },
 
       es: {
@@ -511,6 +555,7 @@
         ],
         avail: 'disponible para problemas interesantes',
         sig: 'hecho con café y cuestionamiento existencial 🦆',
+        avatarNote: '¡soy yo! guapo, ¿no?',
       },
     };
 
@@ -564,6 +609,9 @@
 
       // sig
       document.getElementById('sig').textContent = t.sig;
+
+      // avatar note
+      document.getElementById('avatar-note').textContent = t.avatarNote;
 
       // restart typewriter
       startTypewriter(t.taglines);

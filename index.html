@@ -38,7 +38,7 @@
       --mono: 'JetBrains Mono', monospace;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
 
     body {
       background: var(--bg);
@@ -913,19 +913,25 @@
         }
       }
 
-      function activate(e) {
+      function activate(ptX, ptY) {
         if (active) return;
         active = true;
 
-        // Get current position in viewport
-        const rect = zone.getBoundingClientRect();
-        x = rect.left;
-        y = rect.top;
+        // Center avatar on the pointer, not its layout position
+        x = ptX - SIZE / 2;
+        y = ptY - SIZE / 2;
+
+        // Clamp to viewport
+        x = Math.max(0, Math.min(x, window.innerWidth - SIZE));
+        y = Math.max(0, Math.min(y, window.innerHeight - SIZE));
 
         // Switch to fixed positioning
         zone.classList.add('physics-mode');
         zone.style.left = x + 'px';
         zone.style.top = y + 'px';
+
+        // Prevent page from scrolling horizontally
+        document.documentElement.style.overflowX = 'hidden';
 
         // Show HP bar
         hpBar.classList.add('show');
@@ -936,7 +942,7 @@
         e.stopPropagation();
         const pt = e.touches ? e.touches[0] : e;
 
-        if (!active) activate();
+        if (!active) activate(pt.clientX, pt.clientY);
 
         dragging = true;
         vx = 0; vy = 0;
@@ -1089,6 +1095,7 @@
         hpFill.style.width = '100%';
         hpFill.classList.remove('low', 'mid');
         bubble.classList.remove('show');
+        document.documentElement.style.overflowX = '';
         showBubble('back to normal!', 1000);
       });
     })();

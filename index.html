@@ -906,10 +906,6 @@
           zone.classList.add('evil');
           const line = evilLines[Math.floor(Math.random() * evilLines.length)];
           showBubble(line, 3000);
-          // After 2s, open the "omae wa mou shindeiru" video
-          setTimeout(() => {
-            window.open('https://www.youtube.com/watch?v=wLp2Ukv8YPE', '_blank', 'noopener,noreferrer');
-          }, 2000);
         }
       }
 
@@ -1079,6 +1075,17 @@
       window.addEventListener('touchmove', onPointerMove, { passive: false });
       window.addEventListener('mouseup', onPointerUp);
       window.addEventListener('touchend', onPointerUp);
+
+      // Click evil avatar → omae wa mou shindeiru
+      let dragMoved = false;
+      zone.addEventListener('mousemove', () => { if (dragging) dragMoved = true; });
+      zone.addEventListener('touchmove', () => { if (dragging) dragMoved = true; });
+      zone.addEventListener('click', (e) => {
+        if (evil && !dragMoved) {
+          window.open('https://www.youtube.com/watch?v=wLp2Ukv8YPE', '_blank', 'noopener,noreferrer');
+        }
+        dragMoved = false;
+      });
 
       // Double-click to reset
       zone.addEventListener('dblclick', () => {

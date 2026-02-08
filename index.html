@@ -355,6 +355,23 @@
       opacity: 0.6;
     }
 
+    /* ── SIGNATURE ── */
+    .signature {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: -8px;
+      margin-bottom: 20px;
+      opacity: 0.35;
+      transition: opacity 0.3s;
+    }
+    .signature:hover { opacity: 0.6; }
+
+    .signature svg {
+      height: 32px;
+      width: auto;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
       main { align-items: flex-start; padding-top: 60px; }
@@ -415,6 +432,15 @@
 
       <p class="bio" id="bio"></p>
 
+      <!-- Calligraphy signature — hand-drawn "RP" -->
+      <div class="signature">
+        <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 32C8 32 10 8 12 8C14 8 18 20 20 20C22 20 22 10 26 10C30 10 30 18 32 20C34 22 36 14 36 14" stroke="#ffd700" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M44 28C44 28 46 8 48 8C50 8 58 8 58 14C58 20 48 22 48 22C48 22 56 22 60 30" stroke="#ffd700" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M68 30C72 28 80 26 88 26" stroke="#ffd700" stroke-width="0.8" fill="none" stroke-linecap="round" stroke-dasharray="2 3"/>
+        </svg>
+      </div>
+
       <div class="roles" id="roles"></div>
 
       <hr class="divider">
@@ -426,9 +452,9 @@
 
       <div class="foot">
         <div class="social">
-          <a href="https://github.com/rpedroni" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            GitHub
+          <a href="mailto:rpedroni@rpedroni.com.br">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            Email
           </a>
           <a href="https://x.com/rpedroni_" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -443,7 +469,7 @@
             Instagram
           </a>
         </div>
-        <span class="avail" id="avail"></span>
+        <a href="mailto:rpedroni@rpedroni.com.br" class="avail" id="avail" style="text-decoration:none"></a>
       </div>
 
       <div class="sig" id="sig"></div>
@@ -468,6 +494,7 @@
         ],
         bio: `<strong>CTO</strong> at <a href="https://endaoment.org" target="_blank" rel="noopener">Endaoment</a>.
           I've been building software for 20 years — from digital circuits to smart contracts.
+          Former CS professor at <strong>UTFPR</strong> <span class="dim">(yes, I actually taught humans before teaching machines)</span>.
           These days I spend my time testing what AI can <em>actually</em> do <span class="dim">(and what it just pretends to)</span>,
           and trying to translate that for people who don't want to read a 47-page paper.
           Father of 3 boys — the hardest bugs I've ever had to debug.`,
@@ -476,6 +503,7 @@
           { text: 'full-stack · 20 years' },
           { text: 'crypto / fintech' },
           { text: 'AI explorer', accent: true },
+          { text: 'ex-professor UTFPR' },
           { text: 'dad³' },
         ],
         labHeader: '🧪 what I\'m exploring',
@@ -502,6 +530,7 @@
         ],
         bio: `<strong>CTO</strong> na <a href="https://endaoment.org" target="_blank" rel="noopener">Endaoment</a>.
           Construo software há 20 anos — de circuitos digitais a smart contracts.
+          Ex-professor de computação na <strong>UTFPR</strong> <span class="dim">(sim, eu ensinava humanos antes de ensinar máquinas)</span>.
           Hoje passo o dia testando o que a IA realmente consegue fazer <span class="dim">(e o que ela finge que faz)</span>,
           e tento traduzir isso pra quem não quer ler paper de 47 páginas.
           Pai de 3 piás — os bugs mais difíceis de resolver da minha carreira.`,
@@ -510,6 +539,7 @@
           { text: 'full-stack · 20 anos' },
           { text: 'crypto / fintech' },
           { text: 'explorador de IA', accent: true },
+          { text: 'ex-professor UTFPR' },
           { text: 'pai³' },
         ],
         labHeader: '🧪 o que tô explorando',
@@ -536,6 +566,7 @@
         ],
         bio: `<strong>CTO</strong> en <a href="https://endaoment.org" target="_blank" rel="noopener">Endaoment</a>.
           Construyo software hace 20 años — de circuitos digitales a smart contracts.
+          Ex-profesor de computación en <strong>UTFPR</strong> <span class="dim">(sí, enseñaba humanos antes de enseñar máquinas)</span>.
           Hoy paso el día probando lo que la IA realmente puede hacer <span class="dim">(y lo que finge que hace)</span>,
           e intento traducir eso para quien no quiere leer papers de 47 páginas.
           Padre de 3 pibes — los bugs más difíciles de resolver de mi carrera.`,
@@ -544,6 +575,7 @@
           { text: 'full-stack · 20 años' },
           { text: 'crypto / fintech' },
           { text: 'explorador de IA', accent: true },
+          { text: 'ex-profesor UTFPR' },
           { text: 'papá³' },
         ],
         labHeader: '🧪 lo que estoy explorando',

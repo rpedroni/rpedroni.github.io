@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Ricardo Pedroni</title>
-  <meta name="description" content="CTO, explorador de IA, pai de 3 terroristas.">
+  <meta name="description" content="CTO, AI explorer, father of 3 tiny terrorists.">
   <meta property="og:title" content="Ricardo Pedroni">
-  <meta property="og:description" content="CTO, explorador de IA, pai de 3 terroristas.">
+  <meta property="og:description" content="CTO, AI explorer, father of 3 tiny terrorists.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://rpedroni.com.br">
-  <meta property="og:locale" content="pt_BR">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="pt_BR">
+  <meta property="og:locale:alternate" content="es_ES">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Ricardo Pedroni">
-  <meta name="twitter:description" content="CTO, explorador de IA, pai de 3 terroristas.">
+  <meta name="twitter:description" content="CTO, AI explorer, father of 3 tiny terrorists.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -24,7 +26,8 @@
       --bg: #0a0a0a;
       --surface: #141414;
       --gold: #ffd700;
-      --gold-dim: rgba(255, 215, 0, 0.15);
+      --gold-dim: rgba(255, 215, 0, 0.12);
+      --gold-border: rgba(255, 215, 0, 0.25);
       --orange: #ff8c00;
       --text: #d4d4d4;
       --text-dim: #737373;
@@ -47,7 +50,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── MAIN: vertically centered on desktop ── */
     main {
       flex: 1;
       display: flex;
@@ -56,16 +58,41 @@
       padding: 48px 24px;
     }
 
-    .page {
-      max-width: 620px;
-      width: 100%;
+    .page { max-width: 620px; width: 100%; }
+
+    /* ── LANG SWITCHER ── */
+    .lang-bar {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      display: flex;
+      gap: 4px;
+      z-index: 50;
     }
+
+    .lang-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-dimmer);
+      font-family: var(--font);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .lang-btn:hover { border-color: var(--gold-border); color: var(--text-dim); }
+    .lang-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
 
     /* ── HERO ── */
     .hero-row {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
       margin-bottom: 12px;
     }
 
@@ -77,11 +104,12 @@
       line-height: 1;
     }
 
-    .duck-wrap { width: 30px; height: 30px; flex-shrink: 0; position: relative; }
+    /* ── DUCK (bigger) ── */
+    .duck-wrap { width: 40px; height: 36px; flex-shrink: 0; position: relative; }
 
     .duck {
-      width: 1px; height: 1px; position: absolute; top: 0; left: 0;
-      transform: scale(2.5); transform-origin: top left;
+      width: 1px; height: 1px; position: absolute; top: 2px; left: 2px;
+      transform: scale(3.2); transform-origin: top left;
       animation: bob 3s ease-in-out infinite;
       box-shadow:
         4px 0 #ffd700, 5px 0 #ffd700, 6px 0 #ffd700,
@@ -97,8 +125,8 @@
     }
 
     @keyframes bob {
-      0%, 100% { transform: scale(2.5) translateY(0); }
-      50% { transform: scale(2.5) translateY(-2px); }
+      0%, 100% { transform: scale(3.2) translateY(0); }
+      50% { transform: scale(3.2) translateY(-2px); }
     }
 
     /* ── TYPEWRITER ── */
@@ -125,14 +153,17 @@
     .bio {
       font-size: 0.95rem;
       color: var(--text);
-      line-height: 1.7;
+      line-height: 1.75;
       margin-bottom: 28px;
     }
 
     .bio strong { color: #fff; font-weight: 700; }
+    .bio .gold { color: var(--gold); }
     .bio .dim { color: var(--text-dim); }
+    .bio a { color: var(--gold); text-decoration: none; border-bottom: 1px solid var(--gold-border); transition: border-color 0.15s; }
+    .bio a:hover { border-color: var(--gold); }
 
-    /* ── ROLES (inline pills) ── */
+    /* ── ROLES (inline pills with accent) ── */
     .roles {
       display: flex;
       gap: 8px;
@@ -147,16 +178,18 @@
       border-radius: 100px;
       border: 1px solid var(--border);
       color: var(--text-dim);
-      transition: border-color 0.2s, color 0.2s;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
       white-space: nowrap;
     }
 
-    .role:hover { border-color: var(--gold); color: var(--gold); }
+    .role:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+    .role.accent { border-color: var(--gold-border); color: var(--gold); }
 
-    /* ── DIVIDER ── */
+    /* ── DIVIDER with gold accent ── */
     .divider {
       border: none;
-      border-top: 1px solid var(--border);
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold-border) 0%, var(--border) 40%, var(--border) 100%);
       margin: 0 0 24px;
     }
 
@@ -164,10 +197,11 @@
     .lab-header {
       font-size: 0.8rem;
       font-weight: 700;
-      color: var(--text-dimmer);
+      color: var(--gold);
       text-transform: uppercase;
       letter-spacing: 0.08em;
       margin-bottom: 12px;
+      opacity: 0.7;
     }
 
     .lab-list { display: flex; flex-direction: column; gap: 2px; margin-bottom: 32px; }
@@ -181,11 +215,12 @@
 
     .lab-item:hover { background: var(--surface); }
     .lab-item:hover .arrow { color: var(--gold); transform: translateX(3px); }
+    .lab-item:hover .lab-title { color: var(--gold); }
 
     .lab-emoji { font-size: 1rem; width: 24px; text-align: center; flex-shrink: 0; }
 
     .lab-info { flex: 1; min-width: 0; }
-    .lab-title { font-weight: 700; font-size: 0.88rem; color: #fff; }
+    .lab-title { font-weight: 700; font-size: 0.88rem; color: #fff; transition: color 0.15s; }
     .lab-desc { font-size: 0.78rem; color: var(--text-dim); }
 
     .arrow {
@@ -204,10 +239,7 @@
       gap: 16px;
     }
 
-    .social {
-      display: flex;
-      gap: 20px;
-    }
+    .social { display: flex; gap: 20px; }
 
     .social a {
       color: var(--text-dimmer);
@@ -225,7 +257,7 @@
 
     .avail {
       font-size: 0.75rem;
-      color: var(--text-dimmer);
+      color: var(--text-dim);
       font-style: italic;
       display: flex;
       align-items: center;
@@ -234,11 +266,11 @@
 
     .dot {
       width: 6px; height: 6px; border-radius: 50%;
-      background: var(--gold); opacity: 0.4;
+      background: var(--gold);
       animation: pulse 2s ease-in-out infinite;
     }
 
-    @keyframes pulse { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.6; } }
+    @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
 
     .sig {
       width: 100%;
@@ -255,15 +287,14 @@
       main { align-items: flex-start; padding-top: 60px; }
       .social { gap: 14px; }
       .foot { flex-direction: column; align-items: flex-start; }
+      .lang-bar { top: 12px; right: 12px; }
     }
 
     /* ── LOAD ANIMATION ── */
     .page > * {
-      opacity: 0;
-      transform: translateY(8px);
+      opacity: 0; transform: translateY(8px);
       animation: fadeUp 0.5s ease forwards;
     }
-
     .page > *:nth-child(1) { animation-delay: 0s; }
     .page > *:nth-child(2) { animation-delay: 0.05s; }
     .page > *:nth-child(3) { animation-delay: 0.1s; }
@@ -274,52 +305,41 @@
     .page > *:nth-child(8) { animation-delay: 0.35s; }
     .page > *:nth-child(9) { animation-delay: 0.4s; }
     .page > *:nth-child(10) { animation-delay: 0.45s; }
-
     @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
+
+  <!-- LANGUAGE SWITCHER -->
+  <div class="lang-bar">
+    <button class="lang-btn active" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="pt">PT</button>
+    <button class="lang-btn" data-lang="es">ES</button>
+  </div>
+
   <main>
     <div class="page">
 
-      <!-- NAME + DUCK -->
       <div class="hero-row">
         <h1>Ricardo Pedroni</h1>
         <div class="duck-wrap"><div class="duck"></div></div>
       </div>
 
-      <!-- TYPEWRITER -->
       <div class="tagline">
         <span id="tw"></span><span class="cursor"></span>
       </div>
 
-      <!-- BIO -->
-      <p class="bio">
-        <strong>CTO</strong> na <a href="https://endaoment.org" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">Endaoment</a>.
-        Construo software há 20 anos — de circuitos digitais a smart contracts.
-        Hoje passo o dia testando o que a IA realmente consegue fazer <span class="dim">(e o que ela finge que faz)</span>,
-        e tento traduzir isso pra quem não quer ler paper de 47 páginas.
-        Pai de 3 meninos. Os bugs mais difíceis de resolver da minha carreira.
-      </p>
+      <p class="bio" id="bio"></p>
 
-      <!-- ROLE PILLS -->
-      <div class="roles">
-        <span class="role">CTO</span>
-        <span class="role">full-stack · 20 anos</span>
-        <span class="role">crypto / fintech</span>
-        <span class="role">explorador de IA</span>
-        <span class="role">pai³</span>
-      </div>
+      <div class="roles" id="roles"></div>
 
       <hr class="divider">
 
-      <!-- LAB -->
-      <div class="lab-header">🧪 o que tô explorando</div>
+      <div class="lab-header" id="lab-header"></div>
       <div class="lab-list" id="lab"></div>
 
       <hr class="divider">
 
-      <!-- FOOTER -->
       <div class="foot">
         <div class="social">
           <a href="https://github.com/rpedroni" target="_blank" rel="noopener">
@@ -339,62 +359,207 @@
             Instagram
           </a>
         </div>
-        <span class="avail"><span class="dot"></span> disponível para problemas interessantes</span>
+        <span class="avail" id="avail"></span>
       </div>
 
-      <div class="sig">feito com café e questionamento existencial 🦆</div>
+      <div class="sig" id="sig"></div>
 
     </div>
   </main>
 
   <script>
-    // ── LAB DATA ──
-    const labs = [
-      { e: '🔍', t: 'IA do Dia', d: 'Reviews honestos de ferramentas de IA', url: 'https://instagram.com/rpedroni' },
-      { e: '📚', t: 'Lições de IA', d: 'Conceitos explicados em 60 segundos', url: 'https://instagram.com/rpedroni' },
-      { e: '🧪', t: 'Micro-Produtos', d: 'Experimentos rápidos construídos com IA', url: null },
-      { e: '💀', t: 'Sunset', d: 'Obituários de IAs que não vingaram', url: null },
-    ];
+    // ══════════════════════════════════════════
+    //  i18n — all translatable content lives here
+    // ══════════════════════════════════════════
+    const i18n = {
+      en: {
+        taglines: [
+          '20 years building software. 4 years not sleeping.',
+          'CTO by day. Chaos engineer by... also day.',
+          'I make things that work. Sometimes on purpose.',
+          'Father of 3 boys. Expert negotiator with tiny terrorists.',
+          'Testing every AI so you don\'t have to.',
+          'If it compiles, it\'s a feature. If not, it\'s research.',
+          'My favorite stack? Whatever solves the problem.',
+        ],
+        bio: `<strong>CTO</strong> at <a href="https://endaoment.org" target="_blank" rel="noopener">Endaoment</a>.
+          I've been building software for 20 years — from digital circuits to smart contracts.
+          These days I spend my time testing what AI can <em>actually</em> do <span class="dim">(and what it just pretends to)</span>,
+          and trying to translate that for people who don't want to read a 47-page paper.
+          Father of 3 boys — the hardest bugs I've ever had to debug.`,
+        roles: [
+          { text: 'CTO', accent: true },
+          { text: 'full-stack · 20 years' },
+          { text: 'crypto / fintech' },
+          { text: 'AI explorer', accent: true },
+          { text: 'dad³' },
+        ],
+        labHeader: '🧪 what I\'m exploring',
+        labs: [
+          { e: '🔍', t: 'AI of the Day', d: 'Honest reviews of AI tools', url: 'https://instagram.com/rpedroni' },
+          { e: '📚', t: 'AI Lessons', d: 'Concepts explained in 60 seconds', url: 'https://instagram.com/rpedroni' },
+          { e: '🧪', t: 'Micro-Products', d: 'Quick experiments built with AI', url: null },
+          { e: '💀', t: 'Sunset', d: 'Obituaries for AIs that didn\'t make it', url: null },
+        ],
+        avail: 'available for interesting problems',
+        sig: 'made with coffee and existential questioning 🦆',
+      },
 
-    const el = document.getElementById('lab');
-    labs.forEach(l => {
-      const a = document.createElement(l.url ? 'a' : 'div');
-      a.className = 'lab-item';
-      if (l.url) { a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; }
-      a.innerHTML = `
-        <span class="lab-emoji">${l.e}</span>
-        <div class="lab-info"><div class="lab-title">${l.t}</div><div class="lab-desc">${l.d}</div></div>
-        ${l.url ? '<span class="arrow">→</span>' : '<span class="soon">em breve</span>'}`;
-      el.appendChild(a);
-    });
+      pt: {
+        taglines: [
+          '20 anos construindo software. 4 anos sem dormir.',
+          'CTO de dia. Engenheiro do caos de... dia também.',
+          'Faço coisas que funcionam. Às vezes de propósito.',
+          'Pai de 3 piás. Especialista em negociar com terroristas.',
+          'Testando toda IA que aparece pra você não precisar.',
+          'Se compila, é feature. Se não compila, é research.',
+          'Meu stack favorito? O que resolve o problema.',
+        ],
+        bio: `<strong>CTO</strong> na <a href="https://endaoment.org" target="_blank" rel="noopener">Endaoment</a>.
+          Construo software há 20 anos — de circuitos digitais a smart contracts.
+          Hoje passo o dia testando o que a IA realmente consegue fazer <span class="dim">(e o que ela finge que faz)</span>,
+          e tento traduzir isso pra quem não quer ler paper de 47 páginas.
+          Pai de 3 piás — os bugs mais difíceis de resolver da minha carreira.`,
+        roles: [
+          { text: 'CTO', accent: true },
+          { text: 'full-stack · 20 anos' },
+          { text: 'crypto / fintech' },
+          { text: 'explorador de IA', accent: true },
+          { text: 'pai³' },
+        ],
+        labHeader: '🧪 o que tô explorando',
+        labs: [
+          { e: '🔍', t: 'IA do Dia', d: 'Reviews honestos de ferramentas de IA', url: 'https://instagram.com/rpedroni' },
+          { e: '📚', t: 'Lições de IA', d: 'Conceitos explicados em 60 segundos', url: 'https://instagram.com/rpedroni' },
+          { e: '🧪', t: 'Micro-Produtos', d: 'Experimentos rápidos construídos com IA', url: null },
+          { e: '💀', t: 'Sunset', d: 'Obituários de IAs que não vingaram', url: null },
+        ],
+        avail: 'disponível para problemas interessantes',
+        sig: 'feito com café e questionamento existencial 🦆',
+      },
 
-    // ── TYPEWRITER ──
-    const lines = [
-      '20 anos construindo software. 4 anos sem dormir.',
-      'CTO de dia. Engenheiro do caos de... dia também.',
-      'Faço coisas que funcionam. Às vezes de propósito.',
-      'Pai de 3 meninos. Especialista em negociar com terroristas.',
-      'Testando toda IA que aparece pra você não precisar.',
-      'Se compila, é feature. Se não compila, é research.',
-      'Meu stack favorito? O que resolve o problema.',
-    ];
+      es: {
+        taglines: [
+          '20 años construyendo software. 4 años sin dormir.',
+          'CTO de día. Ingeniero del caos de... día también.',
+          'Hago cosas que funcionan. A veces a propósito.',
+          'Padre de 3 pibes. Experto en negociar con terroristas.',
+          'Probando cada IA para que tú no tengas que hacerlo.',
+          'Si compila, es feature. Si no, es research.',
+          'Mi stack favorito? El que resuelve el problema.',
+        ],
+        bio: `<strong>CTO</strong> en <a href="https://endaoment.org" target="_blank" rel="noopener">Endaoment</a>.
+          Construyo software hace 20 años — de circuitos digitales a smart contracts.
+          Hoy paso el día probando lo que la IA realmente puede hacer <span class="dim">(y lo que finge que hace)</span>,
+          e intento traducir eso para quien no quiere leer papers de 47 páginas.
+          Padre de 3 pibes — los bugs más difíciles de resolver de mi carrera.`,
+        roles: [
+          { text: 'CTO', accent: true },
+          { text: 'full-stack · 20 años' },
+          { text: 'crypto / fintech' },
+          { text: 'explorador de IA', accent: true },
+          { text: 'papá³' },
+        ],
+        labHeader: '🧪 lo que estoy explorando',
+        labs: [
+          { e: '🔍', t: 'IA del Día', d: 'Reviews honestos de herramientas de IA', url: 'https://instagram.com/rpedroni' },
+          { e: '📚', t: 'Lecciones de IA', d: 'Conceptos explicados en 60 segundos', url: 'https://instagram.com/rpedroni' },
+          { e: '🧪', t: 'Micro-Productos', d: 'Experimentos rápidos construidos con IA', url: null },
+          { e: '💀', t: 'Sunset', d: 'Obituarios de IAs que no sobrevivieron', url: null },
+        ],
+        avail: 'disponible para problemas interesantes',
+        sig: 'hecho con café y cuestionamiento existencial 🦆',
+      },
+    };
 
-    const tw = document.getElementById('tw');
-    let li = 0, ci = 0, del = false, spd = 50;
+    // ══════════════════
+    //  STATE
+    // ══════════════════
+    let lang = localStorage.getItem('rp-lang') || (navigator.language.startsWith('pt') ? 'pt' : navigator.language.startsWith('es') ? 'es' : 'en');
+    let twTimeout = null;
 
-    (function type() {
-      const s = lines[li];
-      if (!del) {
-        tw.textContent = s.substring(0, ++ci);
-        spd = ci === s.length ? 2800 : 35 + Math.random() * 35;
-        if (ci === s.length) del = true;
-      } else {
-        tw.textContent = s.substring(0, --ci);
-        spd = ci === 0 ? 300 : 20;
-        if (ci === 0) { del = false; li = (li + 1) % lines.length; }
-      }
-      setTimeout(type, spd);
-    })();
+    // ══════════════════
+    //  RENDER
+    // ══════════════════
+    function render(l) {
+      lang = l;
+      localStorage.setItem('rp-lang', l);
+      document.documentElement.lang = l === 'pt' ? 'pt-BR' : l === 'es' ? 'es' : 'en';
+
+      const t = i18n[l];
+
+      // lang buttons
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+
+      // bio
+      document.getElementById('bio').innerHTML = t.bio;
+
+      // roles
+      const rolesEl = document.getElementById('roles');
+      rolesEl.innerHTML = t.roles.map(r =>
+        `<span class="role${r.accent ? ' accent' : ''}">${r.text}</span>`
+      ).join('');
+
+      // lab header
+      document.getElementById('lab-header').textContent = t.labHeader;
+
+      // lab items
+      const labEl = document.getElementById('lab');
+      labEl.innerHTML = '';
+      t.labs.forEach(l => {
+        const a = document.createElement(l.url ? 'a' : 'div');
+        a.className = 'lab-item';
+        if (l.url) { a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; }
+        a.innerHTML = `
+          <span class="lab-emoji">${l.e}</span>
+          <div class="lab-info"><div class="lab-title">${l.t}</div><div class="lab-desc">${l.d}</div></div>
+          ${l.url ? '<span class="arrow">→</span>' : '<span class="soon">soon</span>'}`;
+        labEl.appendChild(a);
+      });
+
+      // avail
+      document.getElementById('avail').innerHTML = `<span class="dot"></span> ${t.avail}`;
+
+      // sig
+      document.getElementById('sig').textContent = t.sig;
+
+      // restart typewriter
+      startTypewriter(t.taglines);
+    }
+
+    // ══════════════════
+    //  TYPEWRITER
+    // ══════════════════
+    function startTypewriter(lines) {
+      if (twTimeout) clearTimeout(twTimeout);
+      const el = document.getElementById('tw');
+      el.textContent = '';
+      let li = 0, ci = 0, del = false;
+
+      (function step() {
+        const s = lines[li];
+        if (!del) {
+          el.textContent = s.substring(0, ++ci);
+          const spd = ci === s.length ? 2800 : 35 + Math.random() * 35;
+          if (ci === s.length) del = true;
+          twTimeout = setTimeout(step, spd);
+        } else {
+          el.textContent = s.substring(0, --ci);
+          const spd = ci === 0 ? 300 : 20;
+          if (ci === 0) { del = false; li = (li + 1) % lines.length; }
+          twTimeout = setTimeout(step, spd);
+        }
+      })();
+    }
+
+    // ══════════════════
+    //  INIT
+    // ══════════════════
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.addEventListener('click', () => render(b.dataset.lang))
+    );
+
+    render(lang);
   </script>
 </body>
 </html>

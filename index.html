@@ -357,12 +357,12 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      margin-top: -4px;
-      margin-bottom: 20px;
+      margin-top: -16px;
+      margin-bottom: 12px;
     }
 
     .signature img {
-      height: 48px;
+      height: 64px;
       width: auto;
       /* Black on white → gold on transparent:
          invert flips black↔white, sepia+saturate+hue-rotate tints gold,
@@ -385,7 +385,7 @@
       .foot { flex-direction: column; align-items: center; text-align: center; }
       .lang-bar { top: 10px; right: 10px; }
       .lang-btn { font-size: 0.65rem; padding: 3px 8px; }
-      .signature img { height: 36px; }
+      .signature img { height: 48px; }
     }
 
     /* ── AVATAR PHYSICS EASTER EGG ── */
@@ -866,7 +866,8 @@
       const BOUNCE = 0.65;      // energy retained on bounce
       const MIN_SPEED = 15;     // below this → stop
       const DMG_PER_HIT = 8;    // HP lost per wall hit
-      const SIZE = 72;          // avatar size (matches CSS)
+      // Get actual rendered size (respects CSS/media queries)
+      const SIZE = zone.querySelector('.avatar-float').offsetWidth || 72;
 
       const ouch = [
         'ouch!', 'ow!', 'hey!', 'stop!', 'rude!', '💀', 'not the face!',
@@ -914,21 +915,29 @@
         if (active) return;
         active = true;
 
-        // Center avatar on the pointer, not its layout position
+        // Preserve layout space so page doesn't collapse
+        const rect = zone.getBoundingClientRect();
+        const placeholder = document.createElement('div');
+        placeholder.id = 'avatar-placeholder';
+        placeholder.style.width = rect.width + 'px';
+        placeholder.style.height = rect.height + 'px';
+        placeholder.style.flexShrink = '0';
+        zone.parentNode.insertBefore(placeholder, zone);
+
+        // Center avatar on pointer
         x = ptX - SIZE / 2;
         y = ptY - SIZE / 2;
 
         // Clamp to viewport
-        x = Math.max(0, Math.min(x, window.innerWidth - SIZE));
-        y = Math.max(0, Math.min(y, window.innerHeight - SIZE));
+        const W = window.innerWidth;
+        const H = window.innerHeight;
+        x = Math.max(0, Math.min(x, W - SIZE));
+        y = Math.max(0, Math.min(y, H - SIZE));
 
         // Switch to fixed positioning
         zone.classList.add('physics-mode');
         zone.style.left = x + 'px';
         zone.style.top = y + 'px';
-
-        // Prevent page from scrolling horizontally
-        document.documentElement.style.overflowX = 'hidden';
 
         // Show HP bar
         hpBar.classList.add('show');
@@ -945,9 +954,11 @@
         vx = 0; vy = 0;
         if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
 
-        // Re-sync position from current style (in case settled)
-        x = parseFloat(zone.style.left) || x;
-        y = parseFloat(zone.style.top) || y;
+        // Re-sync position (use nullish check — 0 is valid)
+        const parsedX = parseFloat(zone.style.left);
+        const parsedY = parseFloat(zone.style.top);
+        if (!isNaN(parsedX)) x = parsedX;
+        if (!isNaN(parsedY)) y = parsedY;
 
         dragStartX = pt.clientX - x;
         dragStartY = pt.clientY - y;
@@ -1103,7 +1114,9 @@
         hpFill.style.width = '100%';
         hpFill.classList.remove('low', 'mid');
         bubble.classList.remove('show');
-        document.documentElement.style.overflowX = '';
+        // Remove placeholder, restore layout
+        const ph = document.getElementById('avatar-placeholder');
+        if (ph) ph.remove();
         showBubble('back to normal!', 1000);
       });
     })();

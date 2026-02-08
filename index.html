@@ -390,7 +390,7 @@
     /* ── AVATAR PHYSICS EASTER EGG ── */
     .avatar-zone.physics-mode {
       position: fixed;
-      z-index: 10000;
+      z-index: 2147483647; /* max possible — above everything, always */
       margin: 0;
       cursor: grab;
       touch-action: none;
@@ -933,6 +933,7 @@
 
       function onPointerDown(e) {
         e.preventDefault();
+        e.stopPropagation();
         const pt = e.touches ? e.touches[0] : e;
 
         if (!active) activate();
@@ -940,6 +941,10 @@
         dragging = true;
         vx = 0; vy = 0;
         if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+
+        // Re-sync position from current style (in case settled)
+        x = parseFloat(zone.style.left) || x;
+        y = parseFloat(zone.style.top) || y;
 
         dragStartX = pt.clientX - x;
         dragStartY = pt.clientY - y;

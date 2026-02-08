@@ -626,7 +626,7 @@
       </div>
 
       <div class="sig" id="sig"></div>
-      <div style="text-align:center;font-size:0.5rem;color:#1a1a1a;margin-top:8px;font-family:var(--mono)">v5.9</div>
+      <div style="text-align:center;font-size:0.5rem;color:#1a1a1a;margin-top:8px;font-family:var(--mono)">v6.0</div>
 
     </div>
   </main>
@@ -919,12 +919,16 @@
         }
       }
 
-      function activate(ptX, ptY) {
+      function activate() {
         if (active) return;
         active = true;
 
-        // Preserve layout space so page doesn't collapse
+        // Snapshot exact visual position BEFORE changing layout
         const rect = zone.getBoundingClientRect();
+        x = rect.left;
+        y = rect.top;
+
+        // Preserve layout space so page doesn't collapse
         const placeholder = document.createElement('div');
         placeholder.id = 'avatar-placeholder';
         placeholder.style.width = rect.width + 'px';
@@ -932,16 +936,7 @@
         placeholder.style.flexShrink = '0';
         zone.parentNode.insertBefore(placeholder, zone);
 
-        // Center avatar on pointer
-        x = ptX - SIZE / 2;
-        y = ptY - SIZE / 2;
-
-        // Clamp to page container bounds
-        const b = getBounds();
-        x = Math.max(b.left, Math.min(x, b.right - SIZE));
-        y = Math.max(b.top, Math.min(y, b.bottom - SIZE));
-
-        // Switch to fixed positioning
+        // Switch to fixed — stays in EXACT same visual spot
         zone.classList.add('physics-mode');
         zone.style.left = x + 'px';
         zone.style.top = y + 'px';
@@ -955,7 +950,7 @@
         e.stopPropagation();
         const pt = e.touches ? e.touches[0] : e;
 
-        if (!active) activate(pt.clientX, pt.clientY);
+        if (!active) activate();
 
         dragging = true;
         vx = 0; vy = 0;

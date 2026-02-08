@@ -843,6 +843,7 @@
     // ══════════════════════════════════════════
     (function() {
       const zone = document.querySelector('.avatar-zone');
+      const pageEl = document.querySelector('.page');
       const bubble = document.getElementById('avatar-bubble');
       const hpBar = document.getElementById('avatar-hp-bar');
       const hpFill = document.getElementById('avatar-hp-fill');
@@ -859,6 +860,12 @@
       let dragStartX, dragStartY;
       let lastX, lastY, lastTime;
       let velocityHistory = [];
+
+      // Get bounds from .page container (constrain avatar to content area)
+      function getBounds() {
+        const r = pageEl.getBoundingClientRect();
+        return { left: r.left, top: 0, right: r.right, bottom: window.innerHeight };
+      }
 
       // Constants
       const GRAVITY = 600;      // px/s²
@@ -928,11 +935,10 @@
         x = ptX - SIZE / 2;
         y = ptY - SIZE / 2;
 
-        // Clamp to viewport
-        const W = window.innerWidth;
-        const H = window.innerHeight;
-        x = Math.max(0, Math.min(x, W - SIZE));
-        y = Math.max(0, Math.min(y, H - SIZE));
+        // Clamp to page container bounds
+        const b = getBounds();
+        x = Math.max(b.left, Math.min(x, b.right - SIZE));
+        y = Math.max(b.top, Math.min(y, b.bottom - SIZE));
 
         // Switch to fixed positioning
         zone.classList.add('physics-mode');
@@ -1031,15 +1037,14 @@
           x += vx * dt;
           y += vy * dt;
 
-          // Bounce off walls
-          const W = window.innerWidth;
-          const H = window.innerHeight;
+          // Bounce off .page container walls
+          const b = getBounds();
           let hit = false;
 
-          if (x < 0) { x = 0; vx = -vx * BOUNCE; hit = true; }
-          if (x + SIZE > W) { x = W - SIZE; vx = -vx * BOUNCE; hit = true; }
-          if (y < 0) { y = 0; vy = -vy * BOUNCE; hit = true; }
-          if (y + SIZE > H) { y = H - SIZE; vy = -vy * BOUNCE; hit = true; }
+          if (x < b.left) { x = b.left; vx = -vx * BOUNCE; hit = true; }
+          if (x + SIZE > b.right) { x = b.right - SIZE; vx = -vx * BOUNCE; hit = true; }
+          if (y < b.top) { y = b.top; vy = -vy * BOUNCE; hit = true; }
+          if (y + SIZE > b.bottom) { y = b.bottom - SIZE; vy = -vy * BOUNCE; hit = true; }
 
           if (hit) {
             const impactSpeed = Math.sqrt(vx * vx + vy * vy);
@@ -1064,7 +1069,7 @@
 
           // Check if should stop
           const totalSpeed = Math.sqrt(vx * vx + vy * vy);
-          const nearBottom = y + SIZE >= H - 2;
+          const nearBottom = y + SIZE >= b.bottom - 2;
 
           if (totalSpeed < MIN_SPEED && nearBottom) {
             // Settled at bottom
@@ -1094,7 +1099,7 @@
       zone.addEventListener('touchmove', () => { if (dragging) dragMoved = true; });
       zone.addEventListener('click', (e) => {
         if (evil && !dragMoved) {
-          window.open('https://www.youtube.com/watch?v=wLp2Ukv8YPE', '_blank', 'noopener,noreferrer');
+          window.open('https://www.youtube.com/watch?v=dNQs_Bef_V8', '_blank', 'noopener,noreferrer');
         }
         dragMoved = false;
       });

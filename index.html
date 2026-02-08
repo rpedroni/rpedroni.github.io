@@ -1122,65 +1122,17 @@
         el.className = 'duck-rain';
         el.style.left = (Math.random() * (window.innerWidth - 40)) + 'px';
         el.style.top = '-50px';
-        const size = 20 + Math.random() * 24;
+        const size = 24 + Math.random() * 28;
         const dur = 2 + Math.random() * 3;
         el.style.animationDuration = dur + 's';
         el.style.animationDelay = (Math.random() * 0.3) + 's';
-        // Use the same pixel duck box-shadow technique but smaller
-        el.innerHTML = `<svg viewBox="0 0 10 10" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-          <rect x="4" y="0" width="1" height="1" fill="#ffd700"/>
-          <rect x="5" y="0" width="1" height="1" fill="#ffd700"/>
-          <rect x="6" y="0" width="1" height="1" fill="#ffd700"/>
-          <rect x="3" y="1" width="1" height="1" fill="#ffd700"/>
-          <rect x="4" y="1" width="1" height="1" fill="#ffd700"/>
-          <rect x="5" y="1" width="1" height="1" fill="#ffd700"/>
-          <rect x="6" y="1" width="1" height="1" fill="#ffd700"/>
-          <rect x="7" y="1" width="1" height="1" fill="#ffd700"/>
-          <rect x="3" y="2" width="1" height="1" fill="#ffd700"/>
-          <rect x="4" y="2" width="1" height="1" fill="#ffd700"/>
-          <rect x="5" y="2" width="1" height="1" fill="#111"/>
-          <rect x="6" y="2" width="1" height="1" fill="#ffd700"/>
-          <rect x="7" y="2" width="1" height="1" fill="#ffd700"/>
-          <rect x="3" y="3" width="1" height="1" fill="#ffd700"/>
-          <rect x="4" y="3" width="1" height="1" fill="#ffd700"/>
-          <rect x="5" y="3" width="1" height="1" fill="#ffd700"/>
-          <rect x="6" y="3" width="1" height="1" fill="#ffd700"/>
-          <rect x="7" y="3" width="1" height="1" fill="#ffd700"/>
-          <rect x="8" y="3" width="1" height="1" fill="#ff8c00"/>
-          <rect x="9" y="3" width="1" height="1" fill="#ff8c00"/>
-          <rect x="3" y="4" width="1" height="1" fill="#ffd700"/>
-          <rect x="4" y="4" width="1" height="1" fill="#ffd700"/>
-          <rect x="5" y="4" width="1" height="1" fill="#ffd700"/>
-          <rect x="6" y="4" width="1" height="1" fill="#ffd700"/>
-          <rect x="0" y="5" width="1" height="1" fill="#ffd700"/>
-          <rect x="1" y="5" width="1" height="1" fill="#ffd700"/>
-          <rect x="2" y="5" width="1" height="1" fill="#ffd700"/>
-          <rect x="3" y="5" width="1" height="1" fill="#ffd700"/>
-          <rect x="4" y="5" width="1" height="1" fill="#ffd700"/>
-          <rect x="5" y="5" width="1" height="1" fill="#ffd700"/>
-          <rect x="6" y="5" width="1" height="1" fill="#ffd700"/>
-          <rect x="7" y="5" width="1" height="1" fill="#ffd700"/>
-          <rect x="0" y="6" width="1" height="1" fill="#ffd700"/>
-          <rect x="1" y="6" width="1" height="1" fill="#ffd700"/>
-          <rect x="2" y="6" width="1" height="1" fill="#ffc800"/>
-          <rect x="3" y="6" width="1" height="1" fill="#ffc800"/>
-          <rect x="4" y="6" width="1" height="1" fill="#ffc800"/>
-          <rect x="5" y="6" width="1" height="1" fill="#ffc800"/>
-          <rect x="6" y="6" width="1" height="1" fill="#ffd700"/>
-          <rect x="7" y="6" width="1" height="1" fill="#ffd700"/>
-          <rect x="8" y="6" width="1" height="1" fill="#ffd700"/>
-          <rect x="1" y="8" width="1" height="1" fill="#ffd700"/>
-          <rect x="2" y="8" width="1" height="1" fill="#ffd700"/>
-          <rect x="3" y="8" width="1" height="1" fill="#ffd700"/>
-          <rect x="4" y="8" width="1" height="1" fill="#ffd700"/>
-          <rect x="5" y="8" width="1" height="1" fill="#ffd700"/>
-          <rect x="6" y="8" width="1" height="1" fill="#ffd700"/>
-          <rect x="7" y="8" width="1" height="1" fill="#ffd700"/>
-          <rect x="2" y="9" width="1" height="1" fill="#ff8c00"/>
-          <rect x="3" y="9" width="1" height="1" fill="#ff8c00"/>
-          <rect x="5" y="9" width="1" height="1" fill="#ff8c00"/>
-          <rect x="6" y="9" width="1" height="1" fill="#ff8c00"/>
-        </svg>`;
+        const img = document.createElement('img');
+        img.src = 'favicon.svg';
+        img.width = size;
+        img.height = size;
+        img.style.imageRendering = 'pixelated';
+        img.style.display = 'block';
+        el.appendChild(img);
         return el;
       }
 

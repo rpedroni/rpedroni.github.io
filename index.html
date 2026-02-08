@@ -60,6 +60,45 @@
 
     .page { max-width: 620px; width: 100%; }
 
+    /* ── AVATAR ── */
+    .avatar-float {
+      position: absolute;
+      top: -24px;
+      right: -8px;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 2px solid var(--gold-border);
+      overflow: hidden;
+      transform: rotate(3deg);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      z-index: 2;
+    }
+
+    .avatar-float:hover {
+      transform: rotate(-2deg) scale(1.08);
+      border-color: var(--gold);
+    }
+
+    .avatar-float img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-row { position: relative; }
+
+    @media (max-width: 600px) {
+      .avatar-float {
+        width: 56px;
+        height: 56px;
+        top: -16px;
+        right: 0;
+      }
+    }
+
     /* ── LANG SWITCHER ── */
     .lang-bar {
       position: fixed;
@@ -323,6 +362,9 @@
       <div class="hero-row">
         <h1>Ricardo Pedroni</h1>
         <div class="duck-wrap"><div class="duck"></div></div>
+        <div class="avatar-float">
+          <img src="avatar.jpg" alt="Ricardo Pedroni" width="72" height="72" loading="eager">
+        </div>
       </div>
 
       <div class="tagline">

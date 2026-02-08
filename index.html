@@ -19,7 +19,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,400&family=JetBrains+Mono:wght@400&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -62,16 +62,17 @@
     .page { max-width: 620px; width: 100%; }
 
     /* ── AVATAR + ANNOTATION ── */
+    .hero-row { position: relative; overflow: visible; }
+
     .avatar-zone {
-      position: absolute;
-      top: -32px;
-      right: -12px;
-      z-index: 2;
+      position: relative;
+      flex-shrink: 0;
+      margin-left: auto;
     }
 
     .avatar-float {
-      width: 76px;
-      height: 76px;
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
       border: 2px solid var(--gold-border);
       overflow: hidden;
@@ -92,46 +93,40 @@
       display: block;
     }
 
-    /* Hand-written annotation */
-    .avatar-note {
+    /* Hand-written annotation — positioned relative to avatar */
+    .avatar-annot {
       position: absolute;
-      top: -38px;
-      right: 68px;
-      white-space: nowrap;
-      font-family: 'Segoe Script', 'Comic Sans MS', 'Caveat', cursive;
-      font-size: 0.7rem;
-      color: var(--gold);
-      opacity: 0.6;
-      transform: rotate(-6deg);
-      pointer-events: none;
+      bottom: calc(100% + 4px);
+      right: 0;
       display: flex;
       align-items: flex-end;
-      gap: 2px;
-    }
-
-    .avatar-note span {
-      display: inline-block;
-    }
-
-    /* Twirly arrow (SVG) */
-    .twirl-arrow {
-      position: absolute;
-      top: -8px;
-      right: 58px;
-      width: 48px;
-      height: 40px;
-      opacity: 0.45;
+      gap: 4px;
       pointer-events: none;
-      transform: rotate(8deg);
+      white-space: nowrap;
     }
 
-    .hero-row { position: relative; }
+    .avatar-note {
+      font-family: 'Dancing Script', cursive;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--gold);
+      opacity: 0.5;
+      transform: rotate(-4deg);
+    }
+
+    /* Twirly arrow (SVG) — small, connecting note to avatar */
+    .twirl-arrow {
+      width: 28px;
+      height: 22px;
+      opacity: 0.35;
+      transform: scaleX(-1) rotate(-10deg);
+      margin-bottom: -6px;
+    }
 
     @media (max-width: 600px) {
-      .avatar-zone { top: -28px; right: 0; }
+      .avatar-zone { margin-left: 0; }
       .avatar-float { width: 56px; height: 56px; }
-      .avatar-note { display: none; }
-      .twirl-arrow { display: none; }
+      .avatar-annot { display: none; }
     }
 
     /* ── LANG SWITCHER ── */
@@ -168,6 +163,7 @@
       align-items: center;
       gap: 16px;
       margin-bottom: 12px;
+      flex-wrap: nowrap;
     }
 
     h1 {
@@ -361,24 +357,34 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      margin-top: -8px;
+      margin-top: -4px;
       margin-bottom: 20px;
-      opacity: 0.35;
-      transition: opacity 0.3s;
     }
-    .signature:hover { opacity: 0.6; }
 
-    .signature svg {
-      height: 32px;
-      width: auto;
+    .signature span {
+      font-family: 'Dancing Script', cursive;
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: var(--gold);
+      opacity: 0.25;
+      transition: opacity 0.3s;
+      letter-spacing: 0.02em;
+      line-height: 1;
     }
+
+    .signature:hover span { opacity: 0.5; }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
-      main { align-items: flex-start; padding-top: 60px; }
+      main { align-items: flex-start; padding-top: 48px; }
+      .page { overflow-x: hidden; }
+      .hero-row { gap: 10px; }
+      h1 { font-size: clamp(1.8rem, 8vw, 2.6rem); }
       .social { gap: 14px; }
       .foot { flex-direction: column; align-items: flex-start; }
-      .lang-bar { top: 12px; right: 12px; }
+      .lang-bar { top: 10px; right: 10px; }
+      .lang-btn { font-size: 0.65rem; padding: 3px 8px; }
+      .signature span { font-size: 1.3rem; }
     }
 
     /* ── LOAD ANIMATION ── */
@@ -415,14 +421,15 @@
         <h1>Ricardo Pedroni</h1>
         <div class="duck-wrap"><div class="duck"></div></div>
         <div class="avatar-zone">
-          <span class="avatar-note" id="avatar-note"></span>
-          <!-- Twirly arrow SVG pointing down-right toward the avatar -->
-          <svg class="twirl-arrow" viewBox="0 0 60 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 8C12 4 28 2 38 12C48 22 42 34 50 38" stroke="#ffd700" stroke-width="1.5" stroke-linecap="round" fill="none" stroke-dasharray="3 2"/>
-            <path d="M46 32L50 38L43 38" stroke="#ffd700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          </svg>
+          <div class="avatar-annot">
+            <span class="avatar-note" id="avatar-note"></span>
+            <svg class="twirl-arrow" viewBox="0 0 30 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M26 4C20 2 10 4 6 12C4 16 6 20 8 22" stroke="#ffd700" stroke-width="1" stroke-linecap="round" fill="none" stroke-dasharray="2 2"/>
+              <path d="M4 19L8 22L10 18" stroke="#ffd700" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
           <div class="avatar-float">
-            <img src="avatar.jpg" alt="Ricardo Pedroni" width="76" height="76" loading="eager">
+            <img src="avatar.jpg" alt="Ricardo Pedroni" width="72" height="72" loading="eager">
           </div>
         </div>
       </div>
@@ -433,13 +440,9 @@
 
       <p class="bio" id="bio"></p>
 
-      <!-- Calligraphy signature — hand-drawn "RP" -->
+      <!-- Calligraphy signature -->
       <div class="signature">
-        <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 32C8 32 10 8 12 8C14 8 18 20 20 20C22 20 22 10 26 10C30 10 30 18 32 20C34 22 36 14 36 14" stroke="#ffd700" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M44 28C44 28 46 8 48 8C50 8 58 8 58 14C58 20 48 22 48 22C48 22 56 22 60 30" stroke="#ffd700" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M68 30C72 28 80 26 88 26" stroke="#ffd700" stroke-width="0.8" fill="none" stroke-linecap="round" stroke-dasharray="2 3"/>
-        </svg>
+        <span>Ricardo Pedroni</span>
       </div>
 
       <div class="roles" id="roles"></div>

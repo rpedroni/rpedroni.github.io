@@ -390,7 +390,7 @@
     /* ── AVATAR PHYSICS EASTER EGG ── */
     .avatar-zone.physics-mode {
       position: fixed;
-      z-index: 1000;
+      z-index: 10000;
       margin: 0;
       cursor: grab;
       touch-action: none;
@@ -406,6 +406,20 @@
     }
 
     .avatar-zone.physics-mode .avatar-annot { display: none; }
+
+    /* Konami duck rain */
+    .duck-rain {
+      position: fixed;
+      z-index: 9999;
+      pointer-events: none;
+      animation: duckFall linear forwards;
+    }
+
+    @keyframes duckFall {
+      0% { transform: translateY(-60px) rotate(0deg); opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translateY(calc(100vh + 60px)) rotate(720deg); opacity: 0; }
+    }
 
     /* Speech bubble */
     .avatar-bubble {
@@ -892,6 +906,10 @@
           zone.classList.add('evil');
           const line = evilLines[Math.floor(Math.random() * evilLines.length)];
           showBubble(line, 3000);
+          // After 2s, open the "omae wa mou shindeiru" video
+          setTimeout(() => {
+            window.open('https://www.youtube.com/watch?v=wLp2Ukv8YPE', '_blank', 'noopener,noreferrer');
+          }, 2000);
         }
       }
 
@@ -1067,6 +1085,114 @@
         hpFill.classList.remove('low', 'mid');
         bubble.classList.remove('show');
         showBubble('back to normal!', 1000);
+      });
+    })();
+
+    // ══════════════════════════════════════════
+    //  KONAMI CODE → DUCK RAIN 🦆
+    //  ↑↑↓↓←→←→BA
+    // ══════════════════════════════════════════
+    (function() {
+      const CODE = [38,38,40,40,37,39,37,39,66,65]; // ↑↑↓↓←→←→BA
+      let pos = 0;
+      let raining = false;
+
+      // Pixel duck as inline SVG for rain drops
+      function createDuck() {
+        const el = document.createElement('div');
+        el.className = 'duck-rain';
+        el.style.left = (Math.random() * (window.innerWidth - 40)) + 'px';
+        el.style.top = '-50px';
+        const size = 20 + Math.random() * 24;
+        const dur = 2 + Math.random() * 3;
+        el.style.animationDuration = dur + 's';
+        el.style.animationDelay = (Math.random() * 0.3) + 's';
+        // Use the same pixel duck box-shadow technique but smaller
+        el.innerHTML = `<svg viewBox="0 0 10 10" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+          <rect x="4" y="0" width="1" height="1" fill="#ffd700"/>
+          <rect x="5" y="0" width="1" height="1" fill="#ffd700"/>
+          <rect x="6" y="0" width="1" height="1" fill="#ffd700"/>
+          <rect x="3" y="1" width="1" height="1" fill="#ffd700"/>
+          <rect x="4" y="1" width="1" height="1" fill="#ffd700"/>
+          <rect x="5" y="1" width="1" height="1" fill="#ffd700"/>
+          <rect x="6" y="1" width="1" height="1" fill="#ffd700"/>
+          <rect x="7" y="1" width="1" height="1" fill="#ffd700"/>
+          <rect x="3" y="2" width="1" height="1" fill="#ffd700"/>
+          <rect x="4" y="2" width="1" height="1" fill="#ffd700"/>
+          <rect x="5" y="2" width="1" height="1" fill="#111"/>
+          <rect x="6" y="2" width="1" height="1" fill="#ffd700"/>
+          <rect x="7" y="2" width="1" height="1" fill="#ffd700"/>
+          <rect x="3" y="3" width="1" height="1" fill="#ffd700"/>
+          <rect x="4" y="3" width="1" height="1" fill="#ffd700"/>
+          <rect x="5" y="3" width="1" height="1" fill="#ffd700"/>
+          <rect x="6" y="3" width="1" height="1" fill="#ffd700"/>
+          <rect x="7" y="3" width="1" height="1" fill="#ffd700"/>
+          <rect x="8" y="3" width="1" height="1" fill="#ff8c00"/>
+          <rect x="9" y="3" width="1" height="1" fill="#ff8c00"/>
+          <rect x="3" y="4" width="1" height="1" fill="#ffd700"/>
+          <rect x="4" y="4" width="1" height="1" fill="#ffd700"/>
+          <rect x="5" y="4" width="1" height="1" fill="#ffd700"/>
+          <rect x="6" y="4" width="1" height="1" fill="#ffd700"/>
+          <rect x="0" y="5" width="1" height="1" fill="#ffd700"/>
+          <rect x="1" y="5" width="1" height="1" fill="#ffd700"/>
+          <rect x="2" y="5" width="1" height="1" fill="#ffd700"/>
+          <rect x="3" y="5" width="1" height="1" fill="#ffd700"/>
+          <rect x="4" y="5" width="1" height="1" fill="#ffd700"/>
+          <rect x="5" y="5" width="1" height="1" fill="#ffd700"/>
+          <rect x="6" y="5" width="1" height="1" fill="#ffd700"/>
+          <rect x="7" y="5" width="1" height="1" fill="#ffd700"/>
+          <rect x="0" y="6" width="1" height="1" fill="#ffd700"/>
+          <rect x="1" y="6" width="1" height="1" fill="#ffd700"/>
+          <rect x="2" y="6" width="1" height="1" fill="#ffc800"/>
+          <rect x="3" y="6" width="1" height="1" fill="#ffc800"/>
+          <rect x="4" y="6" width="1" height="1" fill="#ffc800"/>
+          <rect x="5" y="6" width="1" height="1" fill="#ffc800"/>
+          <rect x="6" y="6" width="1" height="1" fill="#ffd700"/>
+          <rect x="7" y="6" width="1" height="1" fill="#ffd700"/>
+          <rect x="8" y="6" width="1" height="1" fill="#ffd700"/>
+          <rect x="1" y="8" width="1" height="1" fill="#ffd700"/>
+          <rect x="2" y="8" width="1" height="1" fill="#ffd700"/>
+          <rect x="3" y="8" width="1" height="1" fill="#ffd700"/>
+          <rect x="4" y="8" width="1" height="1" fill="#ffd700"/>
+          <rect x="5" y="8" width="1" height="1" fill="#ffd700"/>
+          <rect x="6" y="8" width="1" height="1" fill="#ffd700"/>
+          <rect x="7" y="8" width="1" height="1" fill="#ffd700"/>
+          <rect x="2" y="9" width="1" height="1" fill="#ff8c00"/>
+          <rect x="3" y="9" width="1" height="1" fill="#ff8c00"/>
+          <rect x="5" y="9" width="1" height="1" fill="#ff8c00"/>
+          <rect x="6" y="9" width="1" height="1" fill="#ff8c00"/>
+        </svg>`;
+        return el;
+      }
+
+      function startRain() {
+        if (raining) return;
+        raining = true;
+        let count = 0;
+        const max = 150;
+        const interval = setInterval(() => {
+          const duck = createDuck();
+          document.body.appendChild(duck);
+          // Remove after animation
+          duck.addEventListener('animationend', () => duck.remove());
+          count++;
+          if (count >= max) {
+            clearInterval(interval);
+            setTimeout(() => { raining = false; }, 5000);
+          }
+        }, 40);
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.keyCode === CODE[pos]) {
+          pos++;
+          if (pos === CODE.length) {
+            pos = 0;
+            startRain();
+          }
+        } else {
+          pos = e.keyCode === CODE[0] ? 1 : 0;
+        }
       });
     })();
   </script>

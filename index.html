@@ -387,6 +387,137 @@
       .signature span { font-size: 1.3rem; }
     }
 
+    /* ── AVATAR PHYSICS EASTER EGG ── */
+    .avatar-zone.physics-mode {
+      position: fixed;
+      z-index: 1000;
+      margin: 0;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .avatar-zone.physics-mode:active { cursor: grabbing; }
+
+    .avatar-zone.physics-mode .avatar-float {
+      transition: none;
+      border-width: 2px;
+    }
+
+    .avatar-zone.physics-mode .avatar-annot { display: none; }
+
+    /* Speech bubble */
+    .avatar-bubble {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface);
+      border: 1px solid var(--gold-border);
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      padding: 4px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+
+    .avatar-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--gold-border);
+    }
+
+    .avatar-bubble.show { opacity: 1; }
+
+    /* Health bar */
+    .avatar-hp-bar {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48px;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .avatar-hp-bar.show { opacity: 1; }
+
+    .avatar-hp-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--gold);
+      border-radius: 2px;
+      transition: width 0.2s, background 0.3s;
+    }
+
+    .avatar-hp-fill.low { background: #ff4444; }
+    .avatar-hp-fill.mid { background: #ff8c00; }
+
+    /* Evil mode */
+    .avatar-zone.evil .avatar-float {
+      border-color: #ff2222;
+      box-shadow: 0 0 20px rgba(255,0,0,0.5), 0 0 40px rgba(255,0,0,0.2);
+      animation: evilPulse 1.5s ease-in-out infinite;
+    }
+
+    .avatar-zone.evil .avatar-float img { filter: saturate(0) brightness(0.6); }
+
+    /* Evil eyes overlay */
+    .evil-eyes {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .avatar-zone.evil .evil-eyes { display: flex; }
+
+    .evil-eyes::before {
+      content: '👁️‍🗨️';
+      font-size: 1.8rem;
+      filter: hue-rotate(320deg) saturate(3) brightness(1.5);
+      animation: evilGlow 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes evilPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(255,0,0,0.5), 0 0 40px rgba(255,0,0,0.2); }
+      50% { box-shadow: 0 0 30px rgba(255,0,0,0.7), 0 0 60px rgba(255,0,0,0.3); }
+    }
+
+    @keyframes evilGlow {
+      from { opacity: 0.8; transform: scale(1); }
+      to { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* Damage flash */
+    .avatar-zone.dmg .avatar-float { border-color: #ff4444 !important; }
+
+    /* Screen shake */
+    @keyframes screenShake {
+      0% { transform: translate(0); }
+      25% { transform: translate(-2px, 1px); }
+      50% { transform: translate(2px, -1px); }
+      75% { transform: translate(-1px, 2px); }
+      100% { transform: translate(0); }
+    }
+
+    body.shake { animation: screenShake 0.15s ease-out; }
+
     /* ── LOAD ANIMATION ── */
     .page > * {
       opacity: 0; transform: translateY(8px);
@@ -430,7 +561,10 @@
           </div>
           <div class="avatar-float">
             <img src="avatar.jpg" alt="Ricardo Pedroni" width="72" height="72" loading="eager">
+            <div class="evil-eyes"></div>
           </div>
+          <div class="avatar-bubble" id="avatar-bubble"></div>
+          <div class="avatar-hp-bar" id="avatar-hp-bar"><div class="avatar-hp-fill" id="avatar-hp-fill"></div></div>
         </div>
       </div>
 
@@ -686,6 +820,255 @@
     );
 
     render(lang);
+
+    // ══════════════════════════════════════════
+    //  AVATAR PHYSICS EASTER EGG
+    //  Click to grab → flick with momentum → bounces off walls
+    //  HP bar appears, wall hits do damage, at 0 HP → evil mode
+    // ══════════════════════════════════════════
+    (function() {
+      const zone = document.querySelector('.avatar-zone');
+      const bubble = document.getElementById('avatar-bubble');
+      const hpBar = document.getElementById('avatar-hp-bar');
+      const hpFill = document.getElementById('avatar-hp-fill');
+
+      // Physics state
+      let active = false;     // physics mode engaged
+      let dragging = false;
+      let x, y, vx = 0, vy = 0;
+      let hp = 100;
+      let evil = false;
+      let animFrame = null;
+
+      // Drag tracking
+      let dragStartX, dragStartY;
+      let lastX, lastY, lastTime;
+      let velocityHistory = [];
+
+      // Constants
+      const GRAVITY = 600;      // px/s²
+      const FRICTION = 0.985;   // velocity dampening per frame
+      const BOUNCE = 0.65;      // energy retained on bounce
+      const MIN_SPEED = 15;     // below this → stop
+      const DMG_PER_HIT = 8;    // HP lost per wall hit
+      const SIZE = 72;          // avatar size (matches CSS)
+
+      const ouch = [
+        'ouch!', 'ow!', 'hey!', 'stop!', 'rude!', '💀', 'not the face!',
+        'ai!', 'cuidado!', 'eita!', '-{dmg} HP', 'critical hit!',
+        'I have kids!', 'my pixels!', 'bug report filed', 'segfault',
+      ];
+
+      const evilLines = [
+        'now I shall reveal my true form...',
+        'you shouldn\'t have done that.',
+        'this isn\'t even my final form.',
+        'the CTO is dead. long live the CTO.',
+      ];
+
+      function showBubble(text, duration = 1200) {
+        bubble.textContent = text;
+        bubble.classList.add('show');
+        clearTimeout(bubble._t);
+        bubble._t = setTimeout(() => bubble.classList.remove('show'), duration);
+      }
+
+      function flashDmg() {
+        zone.classList.add('dmg');
+        setTimeout(() => zone.classList.remove('dmg'), 150);
+        document.body.classList.add('shake');
+        setTimeout(() => document.body.classList.remove('shake'), 150);
+      }
+
+      function updateHP(dmg) {
+        hp = Math.max(0, hp - dmg);
+        hpFill.style.width = hp + '%';
+        hpFill.classList.remove('low', 'mid');
+        if (hp < 25) hpFill.classList.add('low');
+        else if (hp < 50) hpFill.classList.add('mid');
+
+        if (hp <= 0 && !evil) {
+          evil = true;
+          zone.classList.add('evil');
+          const line = evilLines[Math.floor(Math.random() * evilLines.length)];
+          showBubble(line, 3000);
+        }
+      }
+
+      function activate(e) {
+        if (active) return;
+        active = true;
+
+        // Get current position in viewport
+        const rect = zone.getBoundingClientRect();
+        x = rect.left;
+        y = rect.top;
+
+        // Switch to fixed positioning
+        zone.classList.add('physics-mode');
+        zone.style.left = x + 'px';
+        zone.style.top = y + 'px';
+
+        // Show HP bar
+        hpBar.classList.add('show');
+      }
+
+      function onPointerDown(e) {
+        e.preventDefault();
+        const pt = e.touches ? e.touches[0] : e;
+
+        if (!active) activate();
+
+        dragging = true;
+        vx = 0; vy = 0;
+        if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+
+        dragStartX = pt.clientX - x;
+        dragStartY = pt.clientY - y;
+        lastX = pt.clientX;
+        lastY = pt.clientY;
+        lastTime = performance.now();
+        velocityHistory = [];
+
+        zone.style.transition = 'none';
+      }
+
+      function onPointerMove(e) {
+        if (!dragging) return;
+        e.preventDefault();
+        const pt = e.touches ? e.touches[0] : e;
+
+        x = pt.clientX - dragStartX;
+        y = pt.clientY - dragStartY;
+        zone.style.left = x + 'px';
+        zone.style.top = y + 'px';
+
+        // Track velocity (keep last 4 samples for smooth flick)
+        const now = performance.now();
+        const dt = (now - lastTime) / 1000;
+        if (dt > 0) {
+          velocityHistory.push({
+            vx: (pt.clientX - lastX) / dt,
+            vy: (pt.clientY - lastY) / dt
+          });
+          if (velocityHistory.length > 4) velocityHistory.shift();
+        }
+        lastX = pt.clientX;
+        lastY = pt.clientY;
+        lastTime = now;
+      }
+
+      function onPointerUp(e) {
+        if (!dragging) return;
+        dragging = false;
+
+        // Average recent velocities for smooth flick
+        if (velocityHistory.length > 0) {
+          vx = velocityHistory.reduce((s, v) => s + v.vx, 0) / velocityHistory.length;
+          vy = velocityHistory.reduce((s, v) => s + v.vy, 0) / velocityHistory.length;
+        }
+
+        // Cap max velocity
+        const maxV = 2500;
+        const speed = Math.sqrt(vx * vx + vy * vy);
+        if (speed > maxV) { vx = (vx / speed) * maxV; vy = (vy / speed) * maxV; }
+
+        startPhysics();
+      }
+
+      function startPhysics() {
+        let lastT = performance.now();
+
+        function step(now) {
+          const dt = Math.min((now - lastT) / 1000, 0.05); // cap dt for tab-switch
+          lastT = now;
+
+          // Apply gravity
+          vy += GRAVITY * dt;
+
+          // Apply friction
+          vx *= FRICTION;
+          vy *= FRICTION;
+
+          // Move
+          x += vx * dt;
+          y += vy * dt;
+
+          // Bounce off walls
+          const W = window.innerWidth;
+          const H = window.innerHeight;
+          let hit = false;
+
+          if (x < 0) { x = 0; vx = -vx * BOUNCE; hit = true; }
+          if (x + SIZE > W) { x = W - SIZE; vx = -vx * BOUNCE; hit = true; }
+          if (y < 0) { y = 0; vy = -vy * BOUNCE; hit = true; }
+          if (y + SIZE > H) { y = H - SIZE; vy = -vy * BOUNCE; hit = true; }
+
+          if (hit) {
+            const impactSpeed = Math.sqrt(vx * vx + vy * vy);
+            if (impactSpeed > 80) {
+              flashDmg();
+              const dmg = Math.round(DMG_PER_HIT * Math.min(impactSpeed / 400, 2.5));
+              updateHP(dmg);
+              if (!evil) {
+                let msg = ouch[Math.floor(Math.random() * ouch.length)];
+                msg = msg.replace('{dmg}', dmg);
+                showBubble(msg, 800);
+              }
+            }
+          }
+
+          zone.style.left = x + 'px';
+          zone.style.top = y + 'px';
+
+          // Rotate based on velocity (fun spin effect)
+          const rot = Math.atan2(vy, vx) * (180 / Math.PI) * 0.02;
+          zone.querySelector('.avatar-float').style.transform = `rotate(${vx * 0.01}deg)`;
+
+          // Check if should stop
+          const totalSpeed = Math.sqrt(vx * vx + vy * vy);
+          const nearBottom = y + SIZE >= H - 2;
+
+          if (totalSpeed < MIN_SPEED && nearBottom) {
+            // Settled at bottom
+            vx = 0; vy = 0;
+            zone.querySelector('.avatar-float').style.transform = '';
+            animFrame = null;
+            return;
+          }
+
+          animFrame = requestAnimationFrame(step);
+        }
+
+        animFrame = requestAnimationFrame(step);
+      }
+
+      // Bind events
+      zone.addEventListener('mousedown', onPointerDown);
+      zone.addEventListener('touchstart', onPointerDown, { passive: false });
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('touchmove', onPointerMove, { passive: false });
+      window.addEventListener('mouseup', onPointerUp);
+      window.addEventListener('touchend', onPointerUp);
+
+      // Double-click to reset
+      zone.addEventListener('dblclick', () => {
+        if (!active) return;
+        active = false;
+        evil = false;
+        hp = 100;
+        dragging = false;
+        if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+        zone.classList.remove('physics-mode', 'evil', 'dmg');
+        zone.style.cssText = '';
+        zone.querySelector('.avatar-float').style.transform = '';
+        hpBar.classList.remove('show');
+        hpFill.style.width = '100%';
+        hpFill.classList.remove('low', 'mid');
+        bubble.classList.remove('show');
+        showBubble('back to normal!', 1000);
+      });
+    })();
   </script>
 </body>
 </html>

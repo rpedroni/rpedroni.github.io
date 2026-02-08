@@ -361,18 +361,19 @@
       margin-bottom: 20px;
     }
 
-    .signature span {
-      font-family: 'Dancing Script', cursive;
-      font-weight: 700;
-      font-size: 1.6rem;
-      color: var(--gold);
-      opacity: 0.25;
+    .signature img {
+      height: 48px;
+      width: auto;
+      /* Black on white → gold on transparent:
+         invert flips black↔white, sepia+saturate+hue-rotate tints gold,
+         mix-blend-mode:lighten hides the dark background */
+      filter: invert(1) sepia(1) saturate(3) hue-rotate(10deg) brightness(1.1);
+      mix-blend-mode: lighten;
+      opacity: 0.3;
       transition: opacity 0.3s;
-      letter-spacing: 0.02em;
-      line-height: 1;
     }
 
-    .signature:hover span { opacity: 0.5; }
+    .signature:hover img { opacity: 0.6; }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
@@ -384,7 +385,7 @@
       .foot { flex-direction: column; align-items: center; text-align: center; }
       .lang-bar { top: 10px; right: 10px; }
       .lang-btn { font-size: 0.65rem; padding: 3px 8px; }
-      .signature span { font-size: 1.3rem; }
+      .signature img { height: 36px; }
     }
 
     /* ── AVATAR PHYSICS EASTER EGG ── */
@@ -590,7 +591,7 @@
 
       <!-- Calligraphy signature -->
       <div class="signature">
-        <span>Ricardo Pedroni</span>
+        <img src="signature.png" alt="R Pedroni" loading="lazy">
       </div>
 
       <div class="roles" id="roles"></div>

@@ -626,7 +626,7 @@
         <a href="mailto:rpedroni@rpedroni.com.br" class="avail" id="avail" style="text-decoration:none"></a>
       </div>
 
-      <div class="sig"><span style="opacity:0.4">v1.0.3</span> · <span id="sig"></span></div>
+      <div class="sig"><span style="opacity:0.4">v1.0.4</span> · <span id="sig"></span></div>
 
     </div>
   </main>
@@ -926,23 +926,30 @@
         if (active) return;
         active = true;
 
-        // Snapshot exact visual position BEFORE changing layout
-        const rect = zone.getBoundingClientRect();
-        x = rect.left;
-        y = rect.top;
+        // Use the VISIBLE circle element, not the zone (which has invisible children)
+        const floatEl = zone.querySelector('.avatar-float');
+        const floatRect = floatEl.getBoundingClientRect();
 
         // Preserve layout space so page doesn't collapse
+        const zoneRect = zone.getBoundingClientRect();
         const placeholder = document.createElement('div');
         placeholder.id = 'avatar-placeholder';
-        placeholder.style.width = rect.width + 'px';
-        placeholder.style.height = rect.height + 'px';
+        placeholder.style.width = zoneRect.width + 'px';
+        placeholder.style.height = zoneRect.height + 'px';
         placeholder.style.flexShrink = '0';
         zone.parentNode.insertBefore(placeholder, zone);
 
-        // Switch to fixed — stays in EXACT same visual spot
+        // Move zone to body so it's outside any container transforms/offsets
+        document.body.appendChild(zone);
+
+        // Position so the visible circle is exactly where it was
+        x = floatRect.left;
+        y = floatRect.top;
         zone.classList.add('physics-mode');
         zone.style.left = x + 'px';
         zone.style.top = y + 'px';
+        zone.style.width = SIZE + 'px';
+        zone.style.height = SIZE + 'px';
 
         // Show HP bar
         hpBar.classList.add('show');
@@ -1104,6 +1111,9 @@
       });
 
       // Double-click to reset
+      const originalParent = zone.parentNode;
+      const originalNextSibling = zone.nextSibling;
+
       zone.addEventListener('dblclick', () => {
         if (!active) return;
         active = false;
@@ -1118,9 +1128,12 @@
         hpFill.style.width = '100%';
         hpFill.classList.remove('low', 'mid');
         bubble.classList.remove('show');
-        // Remove placeholder, restore layout
+        // Restore zone to original DOM position
         const ph = document.getElementById('avatar-placeholder');
-        if (ph) ph.remove();
+        if (ph) {
+          ph.parentNode.insertBefore(zone, ph);
+          ph.remove();
+        }
         showBubble('back to normal!', 1000);
       });
     })();

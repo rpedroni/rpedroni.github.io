@@ -287,7 +287,8 @@
     .lab-item:hover .arrow { color: var(--gold); transform: translateX(3px); }
     .lab-item:hover .lab-title { color: var(--gold); }
 
-    .lab-emoji { font-size: 1rem; width: 24px; text-align: center; flex-shrink: 0; }
+    .lab-emoji { font-size: 1rem; width: 24px; text-align: center; flex-shrink: 0; line-height: 1; }
+    .lab-emoji-code { font-family: var(--mono); font-size: 0.6rem; font-weight: 700; color: var(--gold); }
 
     .lab-info { flex: 1; min-width: 0; }
     .lab-title { font-weight: 700; font-size: 0.88rem; color: #fff; transition: color 0.15s; }
@@ -625,7 +626,7 @@
         <a href="mailto:rpedroni@rpedroni.com.br" class="avail" id="avail" style="text-decoration:none"></a>
       </div>
 
-      <div class="sig"><span style="opacity:0.4">v1.0.2</span> · <span id="sig"></span></div>
+      <div class="sig"><span style="opacity:0.4">v1.0.3</span> · <span id="sig"></span></div>
 
     </div>
   </main>
@@ -661,7 +662,7 @@
         ],
         labHeader: 'what I\'m exploring',
         labs: [
-          { e: '🚀', t: 'ZeroToTest (02T)', d: 'From idea to MVP in hours, not months', url: null },
+          { e: '<span class="lab-emoji-code">02T</span>', t: 'ZeroToTest (02T)', d: 'From idea to MVP in hours, not months', url: null },
           { e: '🧪', t: 'Micro-Products', d: 'Quick experiments built with AI', url: null },
           { e: '🔍', t: 'AI of the Day', d: 'Honest reviews of AI tools', url: 'https://instagram.com/rpedroni' },
           { e: '📚', t: 'AI Lessons', d: 'Concepts explained in 60 seconds', url: 'https://instagram.com/rpedroni' },
@@ -698,7 +699,7 @@
         ],
         labHeader: 'o que tô explorando',
         labs: [
-          { e: '🚀', t: 'ZeroToTest (02T)', d: 'De ideia a MVP em horas, não meses', url: null },
+          { e: '<span class="lab-emoji-code">02T</span>', t: 'ZeroToTest (02T)', d: 'De ideia a MVP em horas, não meses', url: null },
           { e: '🧪', t: 'Micro-Produtos', d: 'Experimentos rápidos construídos com IA', url: null },
           { e: '🔍', t: 'IA do Dia', d: 'Reviews honestos de ferramentas de IA', url: 'https://instagram.com/rpedroni' },
           { e: '📚', t: 'Lições de IA', d: 'Conceitos explicados em 60 segundos', url: 'https://instagram.com/rpedroni' },
@@ -735,7 +736,7 @@
         ],
         labHeader: 'lo que estoy explorando',
         labs: [
-          { e: '🚀', t: 'ZeroToTest (02T)', d: 'De idea a MVP en horas, no meses', url: null },
+          { e: '<span class="lab-emoji-code">02T</span>', t: 'ZeroToTest (02T)', d: 'De idea a MVP en horas, no meses', url: null },
           { e: '🧪', t: 'Micro-Productos', d: 'Experimentos rápidos construidos con IA', url: null },
           { e: '🔍', t: 'IA del Día', d: 'Reviews honestos de herramientas de IA', url: 'https://instagram.com/rpedroni' },
           { e: '📚', t: 'Lecciones de IA', d: 'Conceptos explicados en 60 segundos', url: 'https://instagram.com/rpedroni' },

@@ -253,17 +253,6 @@
     }
 
     .role:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
-    .role.accent { border-color: var(--gold-border); color: var(--gold); }
-
-    /* Breathing glow — each pill gets a random delay via JS */
-    @keyframes pillBreathe {
-      0%, 100% { border-color: var(--border); color: var(--text-dim); }
-      50% { border-color: var(--gold-border); color: var(--gold); }
-    }
-    @keyframes pillBreatheAccent {
-      0%, 100% { border-color: var(--gold-border); color: var(--gold); opacity: 0.7; }
-      50% { border-color: var(--gold); color: var(--gold); opacity: 1; }
-    }
 
     /* ── DIVIDER with gold accent ── */
     .divider {
@@ -636,7 +625,7 @@
         <a href="mailto:rpedroni@rpedroni.com.br" class="avail" id="avail" style="text-decoration:none"></a>
       </div>
 
-      <div class="sig"><span style="opacity:0.4">v1.2.0</span> · <span id="sig"></span></div>
+      <div class="sig"><span style="opacity:0.4">v1.2.1</span> · <span id="sig"></span></div>
 
     </div>
   </main>
@@ -795,14 +784,11 @@
       // bio
       document.getElementById('bio').innerHTML = t.bio;
 
-      // roles — with staggered breathing animation
+      // roles
       const rolesEl = document.getElementById('roles');
-      rolesEl.innerHTML = t.roles.map((r, i) => {
-        const delay = (Math.random() * 6).toFixed(1);
-        const dur = (3 + Math.random() * 2).toFixed(1);
-        const anim = r.accent ? 'pillBreatheAccent' : 'pillBreathe';
-        return `<span class="role${r.accent ? ' accent' : ''}" style="animation:${anim} ${dur}s ease-in-out ${delay}s infinite">${r.text}</span>`;
-      }).join('');
+      rolesEl.innerHTML = t.roles.map(r =>
+        `<span class="role">${r.text}</span>`
+      ).join('');
 
       // lab header
       document.getElementById('lab-header').textContent = t.labHeader;

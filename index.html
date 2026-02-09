@@ -74,16 +74,41 @@
       width: 72px;
       height: 72px;
       border-radius: 50%;
-      border: 2px solid var(--gold-border);
       overflow: hidden;
       transform: rotate(3deg);
-      transition: transform 0.3s ease, border-color 0.3s ease;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease;
+      /* Animated gradient border via outline + padding trick */
+      padding: 2.5px;
+      background: conic-gradient(
+        from var(--avatar-spin, 0deg),
+        var(--gold) 0%,
+        var(--orange) 25%,
+        var(--gold) 50%,
+        rgba(255,215,0,0.3) 75%,
+        var(--gold) 100%
+      );
+      animation: avatarSpin 4s linear infinite, avatarGlow 3s ease-in-out infinite;
+      box-shadow: 0 0 16px rgba(255,215,0,0.15), 0 4px 24px rgba(0,0,0,0.5);
+    }
+
+    @property --avatar-spin {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @keyframes avatarSpin {
+      to { --avatar-spin: 360deg; }
+    }
+
+    @keyframes avatarGlow {
+      0%, 100% { box-shadow: 0 0 16px rgba(255,215,0,0.15), 0 4px 24px rgba(0,0,0,0.5); }
+      50% { box-shadow: 0 0 24px rgba(255,215,0,0.3), 0 4px 24px rgba(0,0,0,0.5); }
     }
 
     .avatar-float:hover {
       transform: rotate(-2deg) scale(1.1);
-      border-color: var(--gold);
+      animation-play-state: paused;
     }
 
     .avatar-float img {
@@ -91,6 +116,7 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      border-radius: 50%;
     }
 
     /* Hand-written annotation — positioned relative to avatar */
@@ -625,7 +651,7 @@
         <a href="mailto:rpedroni@rpedroni.com.br" class="avail" id="avail" style="text-decoration:none"></a>
       </div>
 
-      <div class="sig"><span style="opacity:0.4">v1.2.1</span> · <span id="sig"></span></div>
+      <div class="sig"><span style="opacity:0.4">v1.2.2</span> · <span id="sig"></span></div>
 
     </div>
   </main>
